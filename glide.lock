@@ -1,0 +1,26 @@
+hash: 214502abe053d160d90aa087ae58423fc9679a33371c3465f10b9d57e44bc03e
+updated: 2016-11-19T10:19:41.400164249-08:00
+imports:
+- name: github.com/davecgh/go-spew
+  version: 346938d642f2ec3594ed81d874461961cd0faa76
+  subpackages:
+  - spew
+- name: github.com/eapache/go-resiliency
+  version: b86b1ec0dd4209a588dc1285cdd471e73525c0b3
+  subpackages:
+  - breaker
+- name: github.com/eapache/go-xerial-snappy
+  version: bb955e01b9346ac19dc29eb16586c90ded99a98c
+- name: github.com/eapache/queue
+  version: 44cc805cf13205b55f69e14bcb69867d1ae92f98
+- name: github.com/golang/snappy
+  version: d9eb7a3d35ec988b8585d4a0068e462c27d28380
+- name: github.com/klauspost/crc32
+  version: cb6bfca970f6908083f26f39a79009d608efd5cd
+- name: github.com/pkg/errors
+  version: 248dadf4e9068a0b3e79f02ed0a610d935de5302
+- name: github.com/upsight/stop
+  version: b8d923de170ec8267ac3c638199038faffa79256
+- name: gopkg.in/Shopify/sarama.v1
+  version: bd61cae2be85fa6ff40eb23dcdd24567967ac2ae
+devImports: []
