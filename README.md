@@ -1,6 +1,6 @@
 # franz
 
-This package provides some convenience wrappers around [sarama] to make it
+This package provides some convenience wrappers around [Sarama] to make it
 easier to create Kakfa consumers and producers in Go.
 
-[sarama]: https://github.com/Shopify/sarama
+[Sarama]: https://github.com/Shopify/sarama
