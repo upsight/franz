@@ -2,4 +2,4 @@ package: github.com/upsight/franz
 import:
 - package: github.com/pkg/errors
 - package: github.com/upsight/stop
-- package: gopkg.in/Shopify/sarama.v1
+- package: github.com/Shopify/sarama
