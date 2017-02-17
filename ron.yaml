@@ -11,7 +11,7 @@ targets:
       - lint
       - vet
     cmd: |
-      go test .
+      go test $(go list ./... | grep -v /vendor/)
   vet:
     description: Run vet on the package.
     cmd: |
