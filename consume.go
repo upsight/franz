@@ -78,7 +78,7 @@ func Consume(c Consumer, addrs []string, group, topic string, partition int32) e
 	ticker := time.NewTicker(1 * time.Second)
 	defer ticker.Stop()
 	go func() {
-		for _ = range ticker.C {
+		for range ticker.C {
 			c.Gauge("lag", float64(partConsumer.HighWaterMarkOffset()-offset))
 		}
 	}()

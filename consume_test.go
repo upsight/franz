@@ -57,7 +57,10 @@ func TestConsume(t *testing.T) {
 	})
 
 	c := &MockConsumer{ChannelStopper: stop.NewChannelStopper(), t: t}
-	Consume(c, []string{b.Addr()}, "group", "topic", 0)
+	err := Consume(c, []string{b.Addr()}, "group", "topic", 0)
+	if err != nil {
+		t.Error(err)
+	}
 
 	select {
 	case <-c.StoppedChannel():

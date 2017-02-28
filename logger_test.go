@@ -78,10 +78,7 @@ func TestCloseAndLog(t *testing.T) {
 			closer = tt.mc
 			tt.mc.err = tt.err
 		}
-		err := closeAndLog(ml, closer, "test_event")
-		if err != tt.err {
-			t.Errorf("err = %v; expected %v", err, tt.err)
-		}
+		closeAndLog(ml, closer, "test_event")
 		if tt.mc != nil && tt.mc.closed != 1 {
 			t.Errorf("tt.mc.closed = %d; expected 1", tt.mc.closed)
 		}

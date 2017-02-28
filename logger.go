@@ -22,15 +22,12 @@ func (n *NoopLogger) Event(event string, err error, data map[string]string) {}
 // Gauge does nothing.
 func (n *NoopLogger) Gauge(gauge string, value float64) {}
 
-func closeAndLog(logger Logger, closer io.Closer, event string) error {
+func closeAndLog(logger Logger, closer io.Closer, event string) {
 	if closer == nil {
-		return nil
+		return
 	}
-	if err := closer.Close(); err != nil {
-		if logger != nil {
-			logger.Event(event, err, nil)
-		}
-		return err
+	err := closer.Close()
+	if err != nil && logger != nil {
+		logger.Event(event, err, nil)
 	}
-	return nil
 }
