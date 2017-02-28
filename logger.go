@@ -1,8 +1,6 @@
 package franz
 
-import (
-	"io"
-)
+import "io"
 
 // Logger is used to emit data about consumers or producers.
 //

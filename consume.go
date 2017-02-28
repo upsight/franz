@@ -7,7 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/upsight/stop"
-	sarama "gopkg.in/Shopify/sarama.v1"
+	"gopkg.in/Shopify/sarama.v1"
 )
 
 // Consumer is a service that reads messages from a topic and partition

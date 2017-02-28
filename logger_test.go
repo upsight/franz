@@ -2,9 +2,9 @@ package franz
 
 import (
 	"errors"
+	"io"
+	"reflect"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 type mockCloser struct {
@@ -49,33 +49,44 @@ func (m *mockLogger) Gauge(gauge string, value float64) {
 }
 
 func TestCloseAndLog(t *testing.T) {
-	ml := &mockLogger{}
-	if err := closeAndLog(ml, nil, ""); assert.NoError(t, err) {
-		assert.Empty(t, ml.events)
-	}
-
-	mc := &mockCloser{}
-	if err := closeAndLog(ml, mc, ""); assert.NoError(t, err) {
-		assert.Equal(t, 1, mc.closed)
-		assert.Empty(t, ml.events)
-	}
-
-	mc = &mockCloser{err: errors.New("test error")}
-	if err := closeAndLog(ml, mc, "test_event"); assert.Error(t, err) {
-		assert.Equal(t, mc.err, err)
-		assert.Equal(t, 1, mc.closed)
-		assert.Equal(t, []mockLoggerEvent{
-			{
-				event: "test_event",
-				err:   mc.err,
-				data:  nil,
+	tests := []struct {
+		err error
+		mc  *mockCloser
+		me  []mockLoggerEvent
+	}{
+		{},
+		{
+			mc: &mockCloser{},
+		},
+		{
+			err: errors.New("test error"),
+			mc:  &mockCloser{},
+			me: []mockLoggerEvent{
+				mockLoggerEvent{
+					event: "test_event",
+					err:   errors.New("test error"),
+					data:  nil,
+				},
 			},
-		}, ml.events)
+		},
 	}
-
-	mc = &mockCloser{err: errors.New("test error")}
-	if err := closeAndLog(nil, mc, "test_event"); assert.Error(t, err) {
-		assert.Equal(t, mc.err, err)
-		assert.Equal(t, 1, mc.closed)
+	for _, tt := range tests {
+		t.Logf("testing: %+v", tt)
+		ml := &mockLogger{}
+		var closer io.Closer
+		if tt.mc != nil {
+			closer = tt.mc
+			tt.mc.err = tt.err
+		}
+		err := closeAndLog(ml, closer, "test_event")
+		if err != tt.err {
+			t.Errorf("err = %v; expected %v", err, tt.err)
+		}
+		if tt.mc != nil && tt.mc.closed != 1 {
+			t.Errorf("tt.mc.closed = %d; expected 1", tt.mc.closed)
+		}
+		if !reflect.DeepEqual(ml.events, tt.me) {
+			t.Errorf("ml.events = %#v; expected %#v", ml.events, tt.me)
+		}
 	}
 }

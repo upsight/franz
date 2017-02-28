@@ -1,12 +1,12 @@
 package franz
 
 import (
+	"reflect"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/upsight/stop"
-	sarama "gopkg.in/Shopify/sarama.v1"
+	"gopkg.in/Shopify/sarama.v1"
 )
 
 type MockConsumer struct {
@@ -26,8 +26,12 @@ func (m *MockConsumer) Consume(msg *sarama.ConsumerMessage, partOffsetMgr sarama
 
 func (m *MockConsumer) StartOffset(partOffsetMgr sarama.PartitionOffsetManager) (int64, error) {
 	offset, metadata := partOffsetMgr.NextOffset()
-	assert.Equal(m.t, int64(122), offset)
-	assert.Equal(m.t, "metadata", metadata)
+	if offset != int64(122) {
+		m.t.Errorf("offset = %d; expected 122", offset)
+	}
+	if metadata != "metadata" {
+		m.t.Errorf("metadata = %q; expected \"metadata\"", metadata)
+	}
 	return offset + 1, nil
 }
 
@@ -71,12 +75,14 @@ func TestConsume(t *testing.T) {
 				Value:     []byte("test message"),
 			},
 		}
-		assert.Equal(t, expectedMsgs, c.msgs)
+		if !reflect.DeepEqual(c.msgs, expectedMsgs) {
+			t.Errorf("c.msgs = %#v; expected %#v", c.msgs, expectedMsgs)
+		}
 	case <-time.After(1 * time.Second):
-		assert.Fail(t, "Consume() did not finish")
+		t.Error("Consume() did not finish")
 	}
 
-	assert.Equal(t, []mockLoggerEvent{
+	expectedEvents := []mockLoggerEvent{
 		{
 			event: "start",
 			err:   nil,
@@ -96,5 +102,8 @@ func TestConsume(t *testing.T) {
 			err:   nil,
 			data:  nil,
 		},
-	}, c.mockLogger.events)
+	}
+	if !reflect.DeepEqual(c.mockLogger.events, expectedEvents) {
+		t.Errorf("c.mockLogger.events = %#v; expected %#v", c.mockLogger.events, expectedEvents)
+	}
 }
